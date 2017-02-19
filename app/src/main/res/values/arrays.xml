@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="drawerOptions">
-        <item>Settings</item>
+        <item>Sign in with Google</item>
     </string-array>
 </resources>

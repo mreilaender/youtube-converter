@@ -4,13 +4,17 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import reilaender.at.youtubeconverter.R;
+import reilaender.at.youtubeconverter.fragments.ResultFragment;
+import reilaender.at.youtubeconverter.listener.ApplicationDrawerListener;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private final String TAG = MainActivity.class.getName();
@@ -25,6 +29,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         toolbar.setTitle(R.string.home);
         setSupportActionBar(toolbar);
         getWindow().setStatusBarColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+
+        // Setup drawer
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ListView drawerList = (ListView) findViewById(R.id.left_drawer);
+
+        // Set adapter for the drawer list view
+        drawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.drawerOptions)));
+        drawerList.setOnItemClickListener(new ApplicationDrawerListener());
     }
 
     @Override
@@ -61,7 +73,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        Log.d(TAG, "You just submitted a search query");
+        // Pass query to fragment
+        Bundle bundle = new Bundle();
+        bundle.putString(ResultFragment.QUERY, query);
+        ResultFragment resultFragment = new ResultFragment();
+        resultFragment.setArguments(bundle);
+
+        // Add fragment
+        getFragmentManager().beginTransaction()
+                .add(R.id.content_main, resultFragment)
+                .commit();
         return true;
     }
 
