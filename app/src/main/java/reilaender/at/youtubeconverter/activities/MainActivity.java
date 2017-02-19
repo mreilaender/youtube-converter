@@ -1,15 +1,19 @@
-package reilaender.at.youtubeconverter;
+package reilaender.at.youtubeconverter.activities;
 
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.SearchView;
+import reilaender.at.youtubeconverter.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+    private final String TAG = MainActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.home);
         setSupportActionBar(toolbar);
+        getWindow().setStatusBarColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
     }
 
     @Override
@@ -31,9 +36,10 @@ public class MainActivity extends AppCompatActivity {
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
+                (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView
+                .setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(this);
 
         return true;
     }
@@ -51,5 +57,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Log.d(TAG, "You just submitted a search query");
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return true;
     }
 }
